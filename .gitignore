@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+
+# Project output (generated at runtime)
+.design-system/
+.design-audit/
+
+# OS
+.DS_Store
+Thumbs.db
