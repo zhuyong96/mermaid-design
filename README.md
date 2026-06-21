@@ -11,7 +11,7 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/<YOU>/mermaid-design-skills.git
+git clone https://github.com/zhuyong96/mermaid-design.git
 ```
 
 ### 在 Hermes Agent 中使用
