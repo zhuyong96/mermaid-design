@@ -32,7 +32,7 @@ EXCLUDED_DIRS: Set[str] = {
 
 # Don't replace values in these dirs (audit/design data stays raw)
 ALWAYS_SKIP_DIRS: Set[str] = {
-    '.design-audit', '.design-system',
+    '.design',
 }
 
 EXCLUDED_EXTENSIONS: Set[str] = {

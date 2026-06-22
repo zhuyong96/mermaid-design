@@ -17,7 +17,7 @@
             (扫描+构建)        (深度审计)              (系统改造)
                 │                 │                      │
                 ▼                 ▼                      ▼
-        .design-system/    .design-audit/         统一后的代码
+        .design/sense/    .design/audit/         统一后的代码
         (设计系统参考)       (所有硬编码值)          (全部使用 token)
 ```
 
@@ -40,14 +40,14 @@
 ```
 用户说"扫描项目"
   → 自动加载 skill
-  → 运行 scan-design-system.py <project-path>
-  → 生成 .design-system/ 目录 (7 个参考文件)
+  → 运行 scan-design-sense.py <project-path>
+  → 生成 .design/sense/ 目录 (7 个参考文件)
 ```
 
 输出目录结构：
 
 ```
-.design-system/
+.design/sense/
 ├── README.md                     # 概览
 ├── 01-component-libraries.md     # UI 框架 + 组件库
 ├── 02-css-strategy.md            # CSS 方案 (Tailwind / CSS Modules / styled)
@@ -62,7 +62,7 @@
 
 ```
 用户说"在项目里新增一个文章列表页"
-  → 自动检查 .design-system/ 是否最新 (--update)
+  → 自动检查 .design/sense/ 是否最新 (--update)
   → 读取 7 个参考文件
   → 分类页面类型 (列表/详情/表单/看板/标签页)
   → 寻找最相似的已有页面作为模板
@@ -100,14 +100,14 @@
 用户说"审计这个项目"
   → 确保 design-sense scan 已完成 (获取框架上下文)
   → 运行 audit-hardcoded-values.py <project-path>
-  → 生成 .design-audit/ 目录 (6 个报告 + value-map.json)
+  → 生成 .design/audit/ 目录 (6 个报告 + value-map.json)
   → 代理分析报告 → 推断"真正的设计系统" → 输出改造建议
 ```
 
 输出目录结构：
 
 ```
-.design-audit/
+.design/audit/
 ├── README.md                       # 概览：文件数、值数、问题汇总
 ├── 01-all-colors.md                # 所有颜色值 + 出现频率 + 上下文
 ├── 02-all-typography.md            # 字体大小、字重、行高
@@ -174,7 +174,7 @@ target_tokens:
 ### 工作机制：5 阶段流水线
 
 ```
-Phase 1: 加载审计数据    ← 读 .design-audit/ + .design-system/
+Phase 1: 加载审计数据    ← 读 .design/audit/ + .design/sense/
 Phase 2: 语义映射        ← AI 推断语义角色 → 映射到参考设计系统
 Phase 3: 注入 Token 层   ← 创建 CSS 变量 / Tailwind 扩展 / SCSS 变量
 Phase 4: 逐层应用        ← 从 CSS 到内联样式到 SVG，逐层替换
@@ -183,7 +183,7 @@ Phase 5: 验证            ← 扫描、构建、对比、报告
 
 #### Phase 1: 加载审计数据
 
-自动读取 `.design-audit/` 和 `.design-system/`，明确：
+自动读取 `.design/audit/` 和 `.design/sense/`，明确：
 
 - 项目框架和 CSS 策略
 - 颜色调色板（按频率排序）
@@ -311,7 +311,7 @@ CSS 变量注入完成后
 ├── design-sense/
 │   ├── SKILL.md                          # Skill 定义 + 完整流程
 │   └── scripts/
-│       └── scan-design-system.py          # 扫描脚本
+│       └── scan-design-sense.py          # 扫描脚本
 │
 ├── design-audit/
 │   ├── SKILL.md                          # Skill 定义 + 完整流程

@@ -159,10 +159,10 @@ def load_reference(name: str) -> Optional[Dict[str, Any]]:
 # ──────────────────────────── Audit Data Loader ────────────────────────────
 
 def load_audit(root: Path) -> Optional[Dict[str, Any]]:
-    """Load the value-map.json from .design-audit/."""
+    """Load the value-map.json from .design/audit/."""
     paths = [
-        root / '.design-audit' / '06-value-map.json',
-        root / '.design-audit' / 'value-map.json',
+        root / '.design/audit' / '06-value-map.json',
+        root / '.design/audit' / 'value-map.json',
     ]
     for p in paths:
         if p.is_file():
@@ -171,7 +171,7 @@ def load_audit(root: Path) -> Optional[Dict[str, Any]]:
             except json.JSONDecodeError:
                 continue
 
-    print(f"Error: No value-map.json found in {root / '.design-audit/'}.", file=sys.stderr)
+    print(f"Error: No value-map.json found in {root / '.design/audit/'}.", file=sys.stderr)
     print("  Run `design-audit` first.", file=sys.stderr)
     return None
 
@@ -705,7 +705,7 @@ def main(args):
     }
 
     # ── Output ──
-    output_dir = root / '.design-audit'
+    output_dir = root / '.design/audit'
 
     if args.output:
         output_path = Path(args.output)

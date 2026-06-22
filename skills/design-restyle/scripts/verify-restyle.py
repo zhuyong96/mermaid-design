@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 EXCLUDED_DIRS = {'node_modules', '.git', 'dist', '.next', '.nuxt',
                  '.output', '.cache', '__pycache__', 'build', 'coverage',
-                 '.turbo', '.design-audit', '.design-system'}
+                 '.turbo', '.design'}
 
 EXCLUDED_EXTENSIONS = {'.d.ts', '.d.tsx', '.min.css', '.min.js',
                        '.png', '.jpg', '.jpeg', '.gif', '.svg',
@@ -320,7 +320,7 @@ def verify(project_path: str, tokens_path: Optional[str] = None,
             flat_map = parsed['flat_map']
             known_old = set(flat_map.keys())
             # Also look in the synthesis file for old→new mapping
-            alt_path = root / '.design-audit' / 'synthesis-recommendations.yaml'
+            alt_path = root / '.design/audit' / 'synthesis-recommendations.yaml'
             if alt_path.is_file():
                 alt_parsed = parse_tokens_file(alt_path)
                 if alt_parsed and 'flat_map' in alt_parsed:

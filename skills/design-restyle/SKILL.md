@@ -1,6 +1,6 @@
 ---
 name: design-restyle
-description: "Systematic UI restyling — read a deep design audit, synthesize target design tokens, inject token infrastructure, apply value mapping layer by layer, and verify consistency. Requires .design-audit/ output from design-audit skill. No dependency changes, no framework changes, no interaction changes."
+description: "Systematic UI restyling — read a deep design audit, synthesize target design tokens, inject token infrastructure, apply value mapping layer by layer, and verify consistency. Requires .design/audit/ output from design-audit skill. No dependency changes, no framework changes, no interaction changes."
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -43,7 +43,7 @@ framework, interaction, or data logic**.
 ## The 5-Phase Workflow
 
 ```
-Phase 1: Load Audit Data     ← read .design-audit/ + .design-system/
+Phase 1: Load Audit Data     ← read .design/audit/ + .design/sense/
 Phase 2: Synthesize Tokens   ← AI infers intended design + creates mapping
 Phase 3: Inject Token Layer  ← add CSS vars / Tailwind config / SCSS vars
 Phase 4: Apply Layer by Layer ← mechanical replacement + agent-assisted
@@ -57,28 +57,28 @@ Phase 5: Verify              ← scan, build, compare, report
 ### Prerequisites
 
 The project must have:
-- `.design-audit/` directory (from `design-audit` scan)
-- `.design-system/` directory (from `design-sense` scan) — for framework context
+- `.design/audit/` directory (from `design-audit` scan)
+- `.design/sense/` directory (from `design-sense` scan) — for framework context
 
 ### Load Order
 
 ```bash
 # Ensure data is fresh
 python3 skills/design-audit/scripts/audit-hardcoded-values.py <project-path> --update
-python3 skills/design-sense/scripts/scan-design-system.py <project-path> --update
+python3 skills/design-sense/scripts/scan-design-sense.py <project-path> --update
 ```
 
 Then read these files in order:
 
 | # | File | What to Get |
 |---|------|-------------|
-| 1 | `.design-system/02-css-strategy.md` | CSS approach (Tailwind/CSS Modules/CSS-in-JS) |
-| 2 | `.design-system/01-component-libraries.md` | UI library used (Ant Design, Element, etc.) |
-| 3 | `.design-audit/05-inconsistencies.md` | Known issues |
-| 4 | `.design-audit/01-all-colors.md` | Color palette (sorted by frequency) |
-| 5 | `.design-audit/03-all-spacing.md` | Spacing values and grid |
-| 6 | `.design-audit/02-all-typography.md` | Font usage |
-| 7 | `.design-audit/04-all-borders-shadows.md` | Radii and shadows |
+| 1 | `.design/sense/02-css-strategy.md` | CSS approach (Tailwind/CSS Modules/CSS-in-JS) |
+| 2 | `.design/sense/01-component-libraries.md` | UI library used (Ant Design, Element, etc.) |
+| 3 | `.design/audit/05-inconsistencies.md` | Known issues |
+| 4 | `.design/audit/01-all-colors.md` | Color palette (sorted by frequency) |
+| 5 | `.design/audit/03-all-spacing.md` | Spacing values and grid |
+| 6 | `.design/audit/02-all-typography.md` | Font usage |
+| 7 | `.design/audit/04-all-borders-shadows.md` | Radii and shadows |
 
 ### Key Questions to Answer
 
@@ -86,11 +86,11 @@ After reading, answer these:
 
 | Question | Where to Look |
 |----------|---------------|
-| What framework? (React/Vue/Next/Nuxt) | `.design-system/01-*.md` |
-| What CSS approach? | `.design-system/02-*.md` |
-| What UI lib? | `.design-system/01-*.md` |
-| What's the dominant color palette? | `.design-audit/01-all-colors.md` (top 20) |
-| What spacing grid (4px/8px)? | `.design-audit/03-all-spacing.md` "Grid Compliance" |
+| What framework? (React/Vue/Next/Nuxt) | `.design/sense/01-*.md` |
+| What CSS approach? | `.design/sense/02-*.md` |
+| What UI lib? | `.design/sense/01-*.md` |
+| What's the dominant color palette? | `.design/audit/01-all-colors.md` (top 20) |
+| What spacing grid (4px/8px)? | `.design/audit/03-all-spacing.md` "Grid Compliance" |
 
 ---
 
@@ -152,7 +152,7 @@ This does all the work automatically:
 
 | What the script does | How |
 |----------------------|-----|
-| Reads `.design-audit/06-value-map.json` | Gets every hardcoded value + file + property context |
+| Reads `.design/audit/06-value-map.json` | Gets every hardcoded value + file + property context |
 | Classifies each value by CSS property | `color:` → text role, `background:` → bg role, etc. |
 | Refines by brightness heuristics | Dark text → `text-primary`, mid gray → `text-secondary` |
 | Groups values by semantic role | All page bg colors together, all borders together, etc. |
@@ -161,7 +161,7 @@ This does all the work automatically:
 
 Output:
 ```
-.design-audit/
+.design/audit/
 ├── semantic-mapping.json         # Flat old→new mapping for apply-value-mapping.py
 ├── semantic-mapping-report.md    # Human-readable: role assignments, decisions
 └── synthesis-recommendations.yaml（可选，AI review后的最终版）
@@ -459,7 +459,7 @@ restyle/phase7: final verification
 ### Automated Verification
 
 ```bash
-python3 skills/design-restyle/scripts/verify-restyle.py <project-path> --tokens .design-audit/semantic-mapping.json
+python3 skills/design-restyle/scripts/verify-restyle.py <project-path> --tokens .design/audit/semantic-mapping.json
 ```
 
 The script checks:
@@ -482,7 +482,7 @@ The script checks:
 
 ### Report
 
-Write to `.design-audit/restyle-report.md`:
+Write to `.design/audit/restyle-report.md`:
 
 ```markdown
 # Restyle Report
@@ -569,11 +569,11 @@ Create alternate token files for different styles:
 
 ```bash
 # Generate style variants from different reference presets
-python3 semantic-mapper.py <path> --reference catppuccin  --output .design-audit/catppuccin-mapping.json
-python3 semantic-mapper.py <path> --reference radix       --output .design-audit/radix-mapping.json
+python3 semantic-mapper.py <path> --reference catppuccin  --output .design/audit/catppuccin-mapping.json
+python3 semantic-mapper.py <path> --reference radix       --output .design/audit/radix-mapping.json
 
 # Then generate token files from each
-python3 apply-value-mapping.py <path> .design-audit/catppuccin-mapping.json --include "tokens.css" --dry-run
+python3 apply-value-mapping.py <path> .design/audit/catppuccin-mapping.json --include "tokens.css" --dry-run
 ```
 
 ### Use Cases
@@ -596,7 +596,7 @@ rebuilding the app. The same compiled JS serves different themes.
 User: "美化这个项目 → 换风格到 Tailwind 色系"
 
 1. Load `design-sense` skill
-   → Run scan: python3 scan-design-system.py <path> [--update]
+   → Run scan: python3 scan-design-sense.py <path> [--update]
 
 2. Load `design-audit` skill
    → Run audit: python3 audit-hardcoded-values.py <path>

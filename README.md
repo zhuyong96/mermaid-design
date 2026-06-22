@@ -14,8 +14,8 @@
 
 | # | Skill | 做什么 | 依赖 | 产出 |
 |---|-------|--------|------|------|
-| 1 | **design-sense** | 扫描前端项目，提取设计系统参考手册，并基于参考构建新页面 | 无（独立可用） | `.design-system/`（7 份参考文档） |
-| 2 | **design-audit** | 找出项目中**所有**硬编码视觉值及不一致，构建机器可读的映射 JSON | 建议先跑 design-sense | `.design-audit/`（6 份报告 + value-map） |
+| 1 | **design-sense** | 扫描前端项目，提取设计系统参考手册，并基于参考构建新页面 | 无（独立可用） | `.design/sense/`（7 份参考文档） |
+| 2 | **design-audit** | 找出项目中**所有**硬编码视觉值及不一致，构建机器可读的映射 JSON | 建议先跑 design-sense | `.design/audit/`（6 份报告 + value-map） |
 | 3 | **design-restyle** | 基于审计结果注入 Token 体系，逐层替换硬编码值，输出统一后的代码 | **依赖** design-audit 结果 | 统一后的项目代码 |
 
 ```
@@ -31,7 +31,7 @@
   (扫描+构建)       (深度审计)              (5 阶段流水线)
       │                │                      │
       ▼                ▼                      ▼
-  .design-system/  .design-audit/        统一后的代码
+  .design/sense/  .design/audit/        统一后的代码
   (设计系统参考)    (所有硬编码值)          (全部使用 token)
 ```
 
@@ -94,10 +94,10 @@ cp -r skills/* ~/.hermes/skills/
 
 **能力：扫描 → 构建**
 
-扫描阶段自动提取项目的**7 份设计参考文档**到 `.design-system/` 目录：
+扫描阶段自动提取项目的**7 份设计参考文档**到 `.design/sense/` 目录：
 
 ```
-.design-system/
+.design/sense/
 ├── README.md                     # 概览
 ├── 01-component-libraries.md     # UI 框架 + 组件库清单
 ├── 02-css-strategy.md            # CSS 方案（Tailwind / CSS Modules / styled）
@@ -130,7 +130,7 @@ AI 代理阅读报告后，自动推断出**真正的设计系统**，输出 `sy
 **5 阶段流水线：**
 
 ```
-Phase 1: 加载审计数据     ← 读 .design-audit/ + .design-system/
+Phase 1: 加载审计数据     ← 读 .design/audit/ + .design/sense/
 Phase 2: 语义映射         ← 选择参考设计系统（Tailwind / Radix / Ant Design 等）
 Phase 3: 注入 Token 层    ← 创建 CSS 变量 / Tailwind extend / SCSS 变量
 Phase 4: 逐层替换         ← CSS 文件 → 内联样式 → Tailwind 类 → SVG → 第三方主题
@@ -188,7 +188,7 @@ mermaid-design/
     ├── design-sense/
     │   ├── SKILL.md                      # Skill 定义 + 完整流程
     │   └── scripts/
-    │       └── scan-design-system.py      # 扫描脚本（stdlib only）
+    │       └── scan-design-sense.py      # 扫描脚本（stdlib only）
     │
     ├── design-audit/
     │   ├── SKILL.md                      # Skill 定义 + 完整流程

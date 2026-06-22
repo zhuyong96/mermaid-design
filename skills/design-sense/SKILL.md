@@ -16,11 +16,11 @@ metadata:
 
 Design Sense does two things in one workflow:
 
-1. **Scan** — reads a frontend project's source code and extracts its design system into `.design-system/` reference files
+1. **Scan** — reads a frontend project's source code and extracts its design system into `.design/sense/` reference files
 2. **Build** — uses those references to create new pages or modify existing layouts, ensuring visual and structural consistency
 
 ```
-用户说"扫描项目"  →  加载此 skill  →  跑脚本 →  输出 .design-system/
+用户说"扫描项目"  →  加载此 skill  →  跑脚本 →  输出 .design/sense/
 用户说"建新页面"  →  加载此 skill  →  检查更新 →  读参考 →  出代码
 ```
 
@@ -28,8 +28,8 @@ Design Sense does two things in one workflow:
 
 | Step | Skill | Output | Purpose |
 |------|-------|--------|---------|
-| 1 | `design-sense` | `.design-system/` | Framework/component/token context |
-| 2 | `design-audit` | `.design-audit/` | All hardcoded values + inconsistencies |
+| 1 | `design-sense` | `.design/sense/` | Framework/component/token context |
+| 2 | `design-audit` | `.design/audit/` | All hardcoded values + inconsistencies |
 | 3 | `design-restyle` | Restyled code | Apply systematic token-based changes |
 
 For **new pages** → just design-sense (scan → build).
@@ -54,20 +54,20 @@ For **existing project restyling** → design-sense → design-audit → design-
 
 **Primary mode** — automated script. When the user asks to scan, **immediately run it** via terminal.
 
-**Script path:** `skills/design-sense/scripts/scan-design-system.py` (relative to the skills repo root)
+**Script path:** `skills/design-sense/scripts/scan-design-sense.py` (relative to the skills repo root)
 
 ```bash
-python3 skills/design-sense/scripts/scan-design-system.py <project-path>
+python3 skills/design-sense/scripts/scan-design-sense.py <project-path>
 ```
 
 ### Scan Execution Flow
 
 1. Ask for project path if not known
-2. Run: `python3 skills/design-sense/scripts/scan-design-system.py <project-path>`
+2. Run: `python3 skills/design-sense/scripts/scan-design-sense.py <project-path>`
    - First time: no flags (full scan)
    - Later: always use `--update` (checks git HEAD, exits instantly if unchanged)
-3. Read `.design-system/.scan-state.json` to confirm scan recorded
-4. Read `.design-system/README.md` to verify output
+3. Read `.design/sense/.scan-state.json` to confirm scan recorded
+4. Read `.design/sense/README.md` to verify output
 5. Report summary to user
 
 ### Fallback: Manual Scan
@@ -80,12 +80,12 @@ Only when the script is unavailable. Use terminal/search_files/read_file:
 4. Scan routes → page list + patterns
 5. Scan components/ → inventory
 6. Read tsconfig/eslint/prettier → conventions
-7. Write all to `.design-system/*.md`
+7. Write all to `.design/sense/*.md`
 
 ### Script Output
 
 ```
-<project-root>/.design-system/
+<project-root>/.design/sense/
 ├── README.md                       # Overview
 ├── 01-component-libraries.md       # UI framework + component library
 ├── 02-css-strategy.md              # CSS approach + preprocessor + utilities
@@ -102,7 +102,7 @@ Only when the script is unavailable. Use terminal/search_files/read_file:
 |------|-------------|
 | `--update` / `-u` | Incremental: only re-scan if git HEAD changed or files modified |
 | `--verbose` / `-v` | Print detailed progress per step |
-| `--output-dir NAME` | Custom output directory (default: `.design-system`) |
+| `--output-dir NAME` | Custom output directory (default: `.design/sense`) |
 
 ---
 
@@ -110,7 +110,7 @@ Only when the script is unavailable. Use terminal/search_files/read_file:
 
 ## Prerequisites
 
-Project must have `.design-system/` directory (from scan above).
+Project must have `.design/sense/` directory (from scan above).
 
 **If it doesn't exist:** load this skill's Scan mode and run it automatically.
 
@@ -119,7 +119,7 @@ Project must have `.design-system/` directory (from scan above).
 ### Step 1: Check Freshness + Load References
 
 ```bash
-python3 skills/design-sense/scripts/scan-design-system.py <project-path>
+python3 skills/design-sense/scripts/scan-design-sense.py <project-path>
 ```
 
 This exits instantly if up to date, or re-scans if needed. Then read:
@@ -261,7 +261,7 @@ Schedule the scan script to run periodically (e.g., weekly via cron, systemd tim
 
 ```bash
 # Weekly scan — adapt to your scheduler
-0 9 * * 1 cd /path/to/project && python3 /path/to/mermaid-design-skills/skills/design-sense/scripts/scan-design-system.py --update
+0 9 * * 1 cd /path/to/project && python3 /path/to/mermaid-design-skills/skills/design-sense/scripts/scan-design-sense.py --update
 ```
 
 ### Layer 3: Git Hook (团队自动化)
@@ -270,7 +270,7 @@ Commit to repo: `.githooks/post-merge`
 
 ```bash
 #!/bin/bash
-SCRIPT="$(git rev-parse --show-toplevel)/skills/design-sense/scripts/scan-design-system.py"
+SCRIPT="$(git rev-parse --show-toplevel)/skills/design-sense/scripts/scan-design-sense.py"
 [ -f "$SCRIPT" ] && python3 "$SCRIPT" "$(git rev-parse --show-toplevel)" --update
 ```
 
@@ -300,7 +300,7 @@ git config core.hooksPath .githooks
 ## Verification Checklist
 
 ### Scan
-- [ ] `.design-system/` created with all 7 files
+- [ ] `.design/sense/` created with all 7 files
 - [ ] Component library detected + version noted
 - [ ] Tokens include colors + font system at minimum
 - [ ] At least 3 page patterns documented

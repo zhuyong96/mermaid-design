@@ -4,7 +4,7 @@ Deep Design Audit — Hardcoded Value Scanner
 =============================================
 Extracts EVERY hardcoded visual value (colors, sizes, radii, shadows, font props)
 from a frontend project's source files. Outputs structured audit reports to
-.design-audit/ for AI analysis and systematic restyling.
+.design/audit/ for AI analysis and systematic restyling.
 
 Usage:
     python3 audit-hardcoded-values.py /path/to/project [--output-dir NAME] [--update] [--verbose]
@@ -158,7 +158,7 @@ def glob_source_files(root: Path) -> List[Path]:
     excluded_dirs = {
         'node_modules', '.git', 'dist', '.next', '.nuxt', '.output',
         '.cache', '__pycache__', 'build', 'coverage', '.turbo',
-        '.design-system', '.design-audit',
+        '.design',
     }
     excluded_extensions = {'.d.ts', '.d.tsx', '.min.css', '.min.js'}
 
@@ -1372,7 +1372,7 @@ def save_audit_state(root: Path, out_root: Path):
 
 # ──────────────────────── Main ────────────────────────
 
-def audit_project(project_path: str, output_dir: str = ".design-audit",
+def audit_project(project_path: str, output_dir: str = ".design/audit",
                   update: bool = False, verbose: bool = False):
     root = Path(project_path).resolve()
     if not root.is_dir():
@@ -1540,7 +1540,7 @@ def audit_project(project_path: str, output_dir: str = ".design-audit",
             print(f"  {icon} {inc['type']}: {inc['description'][:100]}...")
 
     print(f"\nNext: load `design-restyle` skill to apply systematic changes.")
-    print(f"  Or: read .design-audit/ and create token mappings manually.")
+    print(f"  Or: read .design/audit/ and create token mappings manually.")
 
 
 def write_file(path: Path, content: str):
@@ -1564,7 +1564,7 @@ def get_scan_time(out_root: Path) -> str:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Deep design audit — extract all hardcoded visual values")
     parser.add_argument("project", help="Path to the frontend project")
-    parser.add_argument("--output-dir", default=".design-audit", help="Output directory (default: .design-audit)")
+    parser.add_argument("--output-dir", default=".design/audit", help="Output directory (default: .design/audit)")
     parser.add_argument("--update", "-u", action="store_true", help="Incremental: only re-scan if git HEAD changed")
     parser.add_argument("--verbose", "-v", action="store_true", help="Print progress details")
     args = parser.parse_args()

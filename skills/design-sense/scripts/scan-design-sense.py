@@ -3,10 +3,10 @@
 Project Design System Scanner
 =============================
 Scans a frontend project and generates structured Markdown documentation
-of its design system. Output goes to <project>/.design-system/.
+of its design system. Output goes to <project>/.design/sense/.
 
 Usage:
-    python3 scan-design-system.py /path/to/project [--output-dir NAME] [--verbose]
+    python3 scan-design-sense.py /path/to/project [--output-dir NAME] [--verbose]
 """
 
 import argparse
@@ -1018,7 +1018,7 @@ def get_scan_time(out_root: Path) -> str:
 
 # ──────────────────────────── Main ────────────────────────────
 
-def scan_project(project_path: str, output_dir: str = ".design-system", update: bool = False, verbose: bool = False):
+def scan_project(project_path: str, output_dir: str = ".design/sense", update: bool = False, verbose: bool = False):
     root = Path(project_path).resolve()
     if not root.is_dir():
         print(f"Error: {root} is not a directory.", file=sys.stderr)
@@ -1108,7 +1108,7 @@ def scan_project(project_path: str, output_dir: str = ".design-system", update: 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scan a project's design system")
     parser.add_argument("project", help="Path to the frontend project")
-    parser.add_argument("--output-dir", default=".design-system", help="Output directory name (default: .design-system)")
+    parser.add_argument("--output-dir", default=".design/sense", help="Output directory name (default: .design/sense)")
     parser.add_argument("--update", "-u", action="store_true", help="Incremental update: only re-scan if git HEAD changed or files modified")
     parser.add_argument("--verbose", "-v", action="store_true", help="Print progress details")
     args = parser.parse_args()
